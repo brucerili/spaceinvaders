@@ -1,9 +1,22 @@
+'''Bruce Rili
+# Mr. Millard
+# Period 3
+# Dynamic Space Invaders
+#
+# This modified version of Space Invaders includes an extra feature
+# The dynamic element added to the modified Space Invaders are extra alien lives that are randomly generated
+#
+# Dependencies: pygame, mixer, random, locals
+#
+# Original code and assets: https://github.com/russs123/space_invaders
+'''
+# imports modules
 import pygame
 from pygame import mixer
 from pygame.locals import *
 import random
 
-
+# initializes engines
 pygame.mixer.pre_init(44100, -16, 2, 512)
 mixer.init()
 pygame.init()
@@ -13,10 +26,11 @@ pygame.init()
 clock = pygame.time.Clock()
 fps = 60
 
-
+# screen dimensions
 screen_width = 600
 screen_height = 800
 
+# sets window title
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Space Invaders')
 
@@ -41,7 +55,6 @@ laser_fx.set_volume(0.25)
 rows = 5
 cols = 5
 alien_cooldown = 1000#bullet cooldown in milliseconds
-supership_cooldown = 30000#popup cooldown in milliseconds
 last_alien_shot = pygame.time.get_ticks()
 countdown = 3
 last_count = pygame.time.get_ticks()
@@ -184,25 +197,6 @@ class Alien_Bullets(pygame.sprite.Sprite):
 			explosion_group.add(explosion)
 
 
-#create Supership class
-class Supership(pygame.sprite.Sprite):
-	def __init__(self, x, y):
-		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.image.load("img/supership1.png")
-		self.rect = self.image.get_rect()
-		self.rect.center = [x, y]
-		self.move_counter = 0
-		self.move_direction = 2
-	
-
-	def update(self):
-		self.rect.x += self.move_direction
-		self.move_counter += 1
-		if abs(self.move_counter) > 75:
-			self.move_direction *= -1
-			self.move_counter *= self.move_direction
-
-
 #create Explosion class
 class Explosion(pygame.sprite.Sprite):
 	def __init__(self, x, y, size):
@@ -247,7 +241,6 @@ spaceship_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 alien_group = pygame.sprite.Group()
 alien_bullet_group = pygame.sprite.Group()
-supership_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 
 
@@ -260,15 +253,15 @@ def create_aliens():
 
 create_aliens()
 
-
-def create_supership():
-	#generate supership
+# second alien life, randomly spawns another alien behind an alien in the same row or column, acting as another alien life
+def create_alienlife2():
+	#generate alien life
 	for row in range(rows):
 		for item in range(cols):
 			alien = Aliens(100 + item * 100, 100 + row * 70)
 			alien_group.add(alien)
 
-create_supership()
+create_alienlife2()
 
 
 
@@ -312,7 +305,7 @@ while run:
 			alien_bullet_group.update()
 		else:
 			if game_over == -1:
-				draw_text('GAME OVER!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+				draw_text('YOU DIED!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
 			if game_over == 1:
 				draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
 
@@ -334,7 +327,6 @@ while run:
 	bullet_group.draw(screen)
 	alien_group.draw(screen)
 	alien_bullet_group.draw(screen)
-	supership_group.draw(screen)
 	explosion_group.draw(screen)
 
 
